@@ -1,0 +1,128 @@
+﻿<script language="javascript">
+    var url = "http://localhost:59771/api/Empire/";
+    function GetNames() {
+        $.getJSON(url + "names", null, function (data, a, b) {
+            ClearResults();
+            for (var i = 0; i < data.length; i++) {
+                var resultDiv = document.createElement("div");
+                resultDiv.innerHTML = data[i];
+                document.getElementById("results").appendChild(resultDiv);
+            };
+        });
+    }
+    function GetGovernments() {
+        $.getJSON(url + "governments", null, function (data, a, b) {
+            ClearResults();
+            for (var i = 0; i < data.length; i++) {
+                var resultDiv = document.createElement("div");
+                resultDiv.innerHTML = data[i];
+                document.getElementById("results").appendChild(resultDiv);
+            }
+        });
+    }
+    function GetEmpires() {
+        $.getJSON(url + "empires", null, function (data, a, b) {
+            ClearResults();
+            for (var i = 0; i < data.length; i++) {
+                var resultDiv = document.createElement("div");
+                resultDiv.innerHTML = "(" + data[i].Empno + ") " + data[i].EName + " are " + data[i].EGov;
+                document.getElementById("results").appendChild(resultDiv);
+            }
+        });
+    }
+    function GetEmpire() {
+        if ($("#getEmpID").val() == "")
+            alert("No ID supplied!");
+        else
+            $.getJSON(url + "empire/" + $("#getEmpID").val(), null, function (data, a, b) {
+                ClearResults();
+                var resultDiv = document.createElement("div");
+                resultDiv.innerHTML = "(" + data.Empno + ") " + data.EName + " are " + data.EGov;
+                document.getElementById("results").appendChild(resultDiv);
+            })
+    }
+    function AddEmpire() {
+        if ($("#addEmpName").val() == "")
+            alert("No name supplied!");
+        else if ($("#addEmpGov").val() == "")
+            alert("No government supplied!");
+        else
+            $.post(url + "add", {"Empno": 0, "EName": $("#addEmpName").val(), "EGov": $("#addEmpGov").val() }, function (data, a, b) {
+                alert(data);
+            });
+    }
+    function RemoveEmpire() {
+        if ($("#removeEmpID").val() == "")
+            alert("No ID supplied!");
+        else
+            $.ajax({
+                "url": url + "remove",
+                "type": "POST",
+                "data": $("#removeEmpID").val(),
+                "contentType": "text/json",
+                "success": function (data) { alert(data); }
+            });
+    }
+    function ModifyName() {
+        if ($("#modNameID").val() == "")
+            alert("No ID supplied!");
+        else if ($("#modName") == "")
+            alert("No name supplied!");
+        else
+            $.post(url + "modifyname", { "Empno": $("#modNameID").val(), "EName": $("#modName").val(), "EGov": "" }, function (data, a, b) {
+                alert(data);
+            });
+    }
+    function ModifyGovernment() {
+        if ($("#modGovID").val() == "")
+            alert("No ID supplied!");
+        else if ($("#modGov") == "")
+            alert("No government supplied!");
+        else
+            $.post(url + "modifygovernment", { "Empno": $("#modGovID").val(), "EName": "", "EGov": $("#modGov").val() }, function (data, a, b) {
+                alert(data);
+            });
+    }
+    function ModifyEmpire() {
+        if ($("#modEmpID").val() == "")
+            alert("No ID supplied!");
+        else if ($("#modEmpGov") == "")
+            alert("No government supplied!");
+        else if ($("#modEmpName") == "")
+            alert("No name supplied!");
+        else
+            $.post(url + "modify", { "Empno": $("#modEmpID").val(), "EName": $("#modEmpName").val(), "EGov": $("#modEmpGov").val() }, function (data, a, b) {
+                alert(data);
+            });
+    }
+    function ClearResults() {
+        document.getElementById("results").innerHTML = "";
+    }
+</script>
+<div id="buttons">
+    <button onclick="GetNames()">Names</button>
+    <button onclick="GetGovernments()">Governments</button>
+    <button onclick="GetEmpires()">Empires</button>
+    <button onclick="GetEmpire()">Empire</button>
+    <input type="number" placeholder="ID" id="getEmpID" />
+    <button onclick="AddEmpire()">Add Empire</button>
+    <input type="text" placeholder="Name" id="addEmpName" />
+    <input type="text" placeholder="Government" id="addEmpGov" />
+    <button onclick="RemoveEmpire()">Remove Empire</button>
+    <input type="number" placeholder="ID" id="removeEmpID" />
+    <button onclick="ModifyName()">Modify Name</button>
+    <input type="number" placeholder="ID" id="modNameID" />
+    <input type="text" placeholder="Name" id="modName" />
+    <button onclick="ModifyGovernment()">Modify Government</button>
+    <input type="number" placeholder="ID" id="modGovID" />
+    <input type="text" placeholder="Government" id="modGov" />
+    <button onclick="ModifyEmpire()">Modify Empire</button>
+    <input type="number" placeholder="ID" id="modEmpID" />
+    <input type="text" placeholder="Name" id="modEmpName" />
+    <input type="text" placeholder="Government" id="modEmpGov" />
+    <button onclick="ClearResults()">Clear Results</button>
+</div>
+<div id="results">
+
+</div>
+
